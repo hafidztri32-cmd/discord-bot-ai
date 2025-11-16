@@ -10,7 +10,7 @@ DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
-# Load GPT4All offline model
+# Load GPT4All offline model (versi 0.1.7 compatible ARM)
 gpt_model = GPT4All("gpt4all-model.bin")
 
 @bot.event
@@ -19,11 +19,11 @@ async def on_ready():
 
 @bot.command()
 async def ai(ctx, *, prompt):
+    msg = await ctx.send("⏳ Sedang memikirkan jawaban...")
     try:
-        msg = await ctx.send("⏳ Sedang memikirkan jawaban...")
         response = gpt_model.generate(prompt, max_tokens=200)
         await msg.edit(content=response)
     except Exception as e:
-        await ctx.send(f"❌ Error: {e}")
+        await msg.edit(content=f"❌ Error: {e}")
 
 bot.run(DISCORD_TOKEN)
